@@ -1,86 +1,44 @@
-
 package com.studentmanger;
 
-import java.sql.*;
+import org.springframework.stereotype.Service;
+import java.util.List;
 
+@Service
 public class StudentService {
 
-    public void showAllStudents() throws SQLException {
-        String sql = "SELECT * FROM students";
+    private final StudentRepository repository;
 
-        try (Connection con = DatabaseConnection.getConnection();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-
-            while (rs.next()) {
-                System.out.println(
-                        rs.getInt("id") + " | " +
-                                rs.getString("name") + " | " +
-                                rs.getString("email") + " | " +
-                                rs.getInt("age")
-                );
-            }
-        }
+    public StudentService(StudentRepository repository) {
+        this.repository = repository;
     }
 
-    public void addStudent(String name, String email, int age) throws SQLException {
-        String sql = "INSERT INTO students (name, email, age) VALUES (?, ?, ?)";
-
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, name);
-            ps.setString(2, email);
-            ps.setInt(3, age);
-            ps.executeUpdate();
-        }
+    public List<Student> getAllStudents() {
+        return repository.findAll();
     }
 
-    public void deleteStudent(int id) throws SQLException {
-        String sql = "DELETE FROM students WHERE id = ?";
-
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        }
+    public Student addStudent(Student student) {
+        return repository.save(student);
     }
 
-    public void updateStudent(int id, String name, String email, int age) throws SQLException {
-        String sql = "UPDATE students SET name = ?, email = ?, age = ? WHERE id = ?";
-
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, name);
-            ps.setString(2, email);
-            ps.setInt(3, age);
-            ps.setInt(4, id);
-            ps.executeUpdate();
-        }
+    public Student getStudentById(Integer id) {
+        return repository.findById(id).orElse(null);
     }
 
-    public void showStudent(int id) throws SQLException {
-        String sql = "SELECT * FROM students WHERE id = ?";
+    public Student updateStudent(Integer id, Student updatedStudent) {
+        Student student = repository.findById(id).orElse(null);
 
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        if (student != null) {
+            student.setName(updatedStudent.getName());
+            student.setEmail(updatedStudent.getEmail());
+            student.setAge(updatedStudent.getAge());
 
-            ps.setInt(1, id);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    System.out.println(
-                            rs.getInt("id") + " | " +
-                                    rs.getString("name") + " | " +
-                                    rs.getString("email") + " | " +
-                                    rs.getInt("age")
-                    );
-                } else {
-                    System.out.println("Student not found");
-                }
-            }
+            return repository.save(student);
         }
+
+        return null;
+    }
+
+    public void deleteStudent(Integer id) {
+        repository.deleteById(id);
     }
 }

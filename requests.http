@@ -1,0 +1,30 @@
+POST http://localhost:8080/api/students
+Content-Type: application/json
+
+{
+  "name": "Sara",
+  "email": "sara@gmail.com",
+  "age": 22
+}
+
+### Get all students
+GET http://localhost:8080/api/students
+
+
+### Update student
+PUT http://localhost:8080/api/students/4
+Content-Type: application/json
+
+{
+  "name": "Sara Updated",
+  "email": "sara.updated@gmail.com",
+  "age": 23
+}
+
+
+
+### Delete student
+DELETE http://localhost:8080/api/students/4
+
+
+GET http://localhost:8080/api/students

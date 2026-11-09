@@ -1,14 +1,12 @@
 package com.studentmanger;
 
-import java.sql.SQLException;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class Main {
-    public static void main(String[] args) throws SQLException {
 
-        StudentService service = new StudentService();
-
-        System.out.println("ALL STUDENT");
-        StudentService service1 = service;
-        service1.showAllStudents();
+    public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);
     }
 }
